@@ -1,0 +1,23 @@
+function init(self)
+	msg.post(".", "acquire_input_focus")
+end
+
+function on_input(self, action_id, action)
+	if(action_id == hash("left") and action.pressed) then
+		local pos = go.get_position(".")
+		pos.x = pos.x - 64
+		go.set_position(pos)
+	elseif (action_id == hash("right") and action.pressed) then
+		local pos = go.get_position(".")
+		pos.x = pos.x + 64
+		go.set_position(pos)
+	elseif (action_id == hash("up") and action.pressed) then
+		local pos = go.get_position(".")
+		pos.y = pos.y + 64
+		go.set_position(pos)
+	elseif (action_id == hash("down") and action.pressed) then
+		local pos = go.get_position(".")
+		pos.y = pos.y - 64
+		go.set_position(pos)
+	end
+end
