@@ -10,8 +10,8 @@ local function player_current_grid(self)
 end
 
 local function player_tile_id(self, add_x, add_y)
-	local x = add_x
-	local y = add_y
+	local x = add_x and add_x or 0
+	local y = add_y and add_x or 0
 	local current_grid = player_current_grid(self)
 	local tilemap_id = tilemap.get_tile("map#level1", "foreground", current_grid.x + x, current_grid.y+y)
 	return tilemap_id
