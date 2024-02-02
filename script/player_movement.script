@@ -38,8 +38,13 @@ function on_input(self, action_id, action)
 			pos.y = pos.y - 64
 			go.set_position(pos)
 		end
+		
+		local tile_id = player_tile_id(self, 0, 0)
+		if tile_id == 65 then
+			msg.post("ui#ingame", "winning")
+			msg.post(".", "release_input_focus")
+		end
 	end
 	
-	local tile_id = player_tile_id(self, 0, 0)
-	pprint(tile_id)
+	
 end

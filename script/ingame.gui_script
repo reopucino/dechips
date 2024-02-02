@@ -1,0 +1,14 @@
+function init(self)
+	
+end
+
+local function turunkan_popup(self)
+	local node_popup = gui.get_node("popup_win")
+	gui.animate(node_popup, "position", vmath.vector3(340, 240, 0), gui.EASING_LINEAR, 0.5)
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("winning") then
+		turunkan_popup(self)
+	end
+end
