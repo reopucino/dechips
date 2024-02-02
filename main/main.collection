@@ -80,7 +80,7 @@ embedded_instances {
   position {
     x: 96.0
     y: 96.0
-    z: 0.1
+    z: 0.3
   }
   rotation {
     x: 0.0
