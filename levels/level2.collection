@@ -3,8 +3,8 @@ scale_along_z: 0
 embedded_instances {
   id: "map"
   data: "components {\n"
-  "  id: \"level1\"\n"
-  "  component: \"/levels/level1.tilemap\"\n"
+  "  id: \"level\"\n"
+  "  component: \"/levels/level2.tilemap\"\n"
   "  position {\n"
   "    x: 0.0\n"
   "    y: 0.0\n"

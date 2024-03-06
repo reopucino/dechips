@@ -1,0 +1,24 @@
+local function map_position(x, y)
+	return vmath.vector3(x*64-32, y*64-32, 0.3)
+end
+
+local function setup_map(self)
+	local x, y, w, h = tilemap.get_bounds("map#level1")
+
+	for ix = x, x+w-1 do
+		for iy = y, y+h-1 do
+			local player_map = tilemap.get_tile("map#level1", "setup", ix, iy)
+
+			if player_map == 74 then
+				local p_pos = map_position(ix, iy)
+				local player = factory.create("/factory#factory", p_pos)			
+				tilemap.set_tile("map#level1", "setup", ix, iy, 0)
+			end
+		end
+	end
+end
+
+
+function init(self)
+	setup_map(self)
+end
