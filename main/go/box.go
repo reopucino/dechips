@@ -1,5 +1,5 @@
 components {
-  id: "object_movement"
+  id: "player_movement"
   component: "/script/object_movement.script"
   position {
     x: 0.0
@@ -16,7 +16,7 @@ components {
 embedded_components {
   id: "sprite"
   type: "sprite"
-  data: "default_animation: \"player_border_idle_down\"\n"
+  data: "default_animation: \"box\"\n"
   "material: \"/builtins/materials/sprite.material\"\n"
   "blend_mode: BLEND_MODE_ALPHA\n"
   "textures {\n"
@@ -40,11 +40,12 @@ embedded_components {
   id: "collisionobject"
   type: "collisionobject"
   data: "collision_shape: \"\"\n"
-  "type: COLLISION_OBJECT_TYPE_KINEMATIC\n"
+  "type: COLLISION_OBJECT_TYPE_TRIGGER\n"
   "mass: 0.0\n"
   "friction: 0.1\n"
   "restitution: 0.5\n"
-  "group: \"player\"\n"
+  "group: \"box\"\n"
+  "mask: \"player\"\n"
   "mask: \"box\"\n"
   "embedded_collision_shape {\n"
   "  shapes {\n"

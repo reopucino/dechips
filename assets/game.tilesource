@@ -7,9 +7,9 @@ collision: ""
 material_tag: "tile"
 collision_groups: "default"
 animations {
-  id: "New Animation"
-  start_tile: 1
-  end_tile: 1
+  id: "box"
+  start_tile: 2
+  end_tile: 2
   playback: PLAYBACK_ONCE_FORWARD
   fps: 30
   flip_horizontal: 0

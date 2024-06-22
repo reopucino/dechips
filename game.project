@@ -1,5 +1,5 @@
 [bootstrap]
-main_collection = /main/main.collectionc
+main_collection = /levels/level2.collectionc
 
 [script]
 shared_state = 1
@@ -13,4 +13,7 @@ input_method = HiddenInputField
 
 [project]
 title = dechips
+
+[physics]
+debug = 0
 

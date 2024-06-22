@@ -7,18 +7,47 @@ local function setup_map(self)
 
 	for ix = x, x+w-1 do
 		for iy = y, y+h-1 do
-			local player_map = tilemap.get_tile("map#level1", "setup", ix, iy)
-
-			if player_map == 74 then
-				local p_pos = map_position(ix, iy)
-				local player = factory.create("/factory#factory", p_pos)			
+			local map_id = tilemap.get_tile("map#level1", "setup", ix, iy)
+			local p_pos = map_position(ix, iy)
+			if map_id == 74 then
+				self.p = factory.create("/factory#factory_player", p_pos)
+				tilemap.set_tile("map#level1", "setup", ix, iy, 0)
+			elseif map_id == 41 then
+				local o = factory.create("/factory#factory_box", p_pos)
 				tilemap.set_tile("map#level1", "setup", ix, iy, 0)
 			end
 		end
 	end
 end
 
+local function check_tile_foreground(self, x, y)
+	return tilemap.get_tile("map#level1", "foreground", x, y)
+end
+
+local function simulate_movement(self)
+
+end
 
 function init(self)
+	msg.post(".", "acquire_input_focus")
 	setup_map(self)
+end
+
+function on_input(self, action_id, action)
+	if(action.pressed)then
+		if(action_id == hash("left") or action_id == hash("right") or action_id == hash("up") or action_id == hash("down") )then
+			print(action_id)
+			simulate_movement(self)
+		end
+		
+		-- if(action_id == hash("left")) or then
+		-- 	msg.post(self.p, "move_left")
+		-- elseif action_id == hash("right") then
+		-- 	msg.post(self.p, "move_right")
+		-- elseif action_id == hash("up") then
+		-- 	msg.post(self.p, "move_up")
+		-- elseif action_id == hash("down") then
+		-- 	msg.post(self.p, "move_down")
+		-- end
+	end
 end
