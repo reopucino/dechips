@@ -29,24 +29,11 @@ local function move(self, string_message)
 		pos.y = pos.y-64
 	end
 	go.set_position(pos)
-
-	--check position
-	if is_not_wall(self, 0, 0) == false then
-		if string_message == hash("move_left") then
-			pos.x = pos.x+64
-		elseif string_message == hash("move_right") then
-			pos.x = pos.x-64
-		elseif string_message == hash("move_up") then
-			pos.y = pos.y-64
-		elseif string_message == hash("move_down")then
-			pos.y = pos.y+64
-		end 
-		go.set_position(pos)
-	end
 end
 
 
 local last_move = nil
+go.property("is_player", false)
 function init(self)
 	-- Add initialization code here
 	-- Learn more: https://defold.com/manuals/script/
@@ -89,18 +76,9 @@ function on_message(self, message_id, message, sender)
 	-- 	last_move = message_id
 	-- end
 
-	if message_id == hash("move_left") then
-		move(self, message_id)
-		last_move = message_id
-	elseif message_id == hash("move_right") then
-		move(self, message_id)
-		last_move = message_id
-	elseif message_id == hash("move_up") then
-		move(self, message_id)
-		last_move = message_id
-	elseif message_id == hash("move_down") then
-		move(self, message_id)
-		last_move = message_id
+	-- move
+	if message_id == hash("move_left") or message_id == hash("move_right") or message_id == hash("move_up") or message_id == hash("move_down") then
+		move(self, message_id, message)
 	end
 
 	if message_id == hash("trigger_response")then
