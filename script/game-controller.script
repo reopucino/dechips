@@ -1,5 +1,5 @@
 local actors = {}
-local group_box = {}
+local group_trigger = {}
 local gate_locks = {}
 
 local function map_position(x, y)
@@ -20,7 +20,9 @@ local function setup_map(self)
 				tilemap.set_tile("map#level1", "setup", ix, iy, 0)
 				table.insert(actors, self.p)
 			elseif map_id == 40 then
-				factory.create("/factory#factory_trigger", p_pos, nil) -- trigger box for level
+				local varlue_m = {grid_x = ix, grid_y = iy}
+				factory.create("/factory#factory_trigger", p_pos)
+				table.insert(group_trigger, varlue_m)
 			elseif map_id == 41 then
 				local o = factory.create("/factory#factory_box", p_pos, nil, {control_url = our_url})
 				tilemap.set_tile("map#level1", "setup", ix, iy, 0)
@@ -29,7 +31,7 @@ local function setup_map(self)
 
 			-- collect foreground gate
 			if map_id_foreground == 11 then
-				local value_foreground = {grid_x = ix, grid_y = iy, lock=true}
+				local value_foreground = {grid_x = ix, grid_y = iy}
 				table.insert(gate_locks, value_foreground)
 			end
 		end
@@ -91,19 +93,18 @@ local function grid_to_string(self, grid)
 	return string
 end
 
-local function check_all_gate_locked()
-	for key, value in ipairs(gate_locks) do
-		print("96 : ", value.lock)
-		-- if value.lock then
-		-- return true
-		-- 	print("99 : ,", value.lock) 
-		-- end
+local function check_all_trigger_locked(self)
+	for key, value in ipairs(group_trigger) do
+		local o = object_on_tiles(self, value.grid_x, value.grid_y)
+		if o == nil then
+			return true
+		end
 	end
 	return false
 end
 
 local function open_all_gate(self, lock)
-	local gate = lock and 11 or 19
+	local gate = lock and 19 or 11
 	for key, value in ipairs(gate_locks) do
 		tilemap.set_tile("map#level1", "foreground", value.grid_x, value.grid_y, gate)
 	end
@@ -130,7 +131,6 @@ end
 local function check_winning(self)
 	local grid_p = gameobject_current_grid(self, self.p)
 	local tile_id = check_tile_foreground(self, grid_p.x, grid_p.y)
-	print(tile_id)
 	if tile_id == 65 then
 		msg.post("ui#ingame", "winning")
 		msg.post(".", "release_input_focus")
@@ -148,35 +148,17 @@ function on_input(self, action_id, action)
 			local vec3 = input_vector(self, action_id)
 			simulate_movement(self, vec3.x, vec3.y)
 		end
-
 		timer.delay(0.05, false, check_winning)
 	end
 end
 
 function on_message(self, message_id, message, sender)
 	if message_id == hash("open_gate") then
-		-- set value to open the gate
-		for key, value in ipairs(gate_locks) do
-			print("open gate 16")
-			pprint(message)
-			pprint(value)
-			if message.grid_x == value.grid_x and message.grid_y == value.grid_y and value.lock == true then
-				print("open gate")
-				gate_locks[key].lock = false
-			end
+		local will_open = not check_all_trigger_locked(self)
+		if will_open then
+			open_all_gate(self, true)
 		end
-		local will_open = check_all_gate_locked()
-		print("164 ", will_open)
-		-- if will_open then
-		-- 	open_all_gate(self, false)
-		-- end
-	elseif message_id == hash("close_gate") then 
-		for key, value in ipairs(gate_locks) do
-			if message.grid_x == value.grid_x and message.grid_y == value.grid_y and value.lock == false then
-				gate_locks[key].lock = true
-			end
-		end
-		print("close gate")
-		-- open_all_gate(self, true)
-	end
+	elseif message_id == hash("close_gate") then
+		open_all_gate(self, false)
+	end	
 end

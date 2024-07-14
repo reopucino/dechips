@@ -4,19 +4,6 @@ local function current_grid(self)
 	return grid
 end
 
-local function check_tile_id(self, add_x, add_y)
-	local x = add_x and add_x or 0
-	local y = add_y and add_y or 0
-	local grid = current_grid(self)
-	local tilemap_id = tilemap.get_tile("map#level1", "foreground", grid.x + x, grid.y+y)
-	return tilemap_id
-end
-
-local function is_not_wall(self, add_x, add_y)
-	local next_tilemap_id = check_tile_id(self, add_x, add_y)
-	return next_tilemap_id ~= 8
-end
-
 local function move(self, string_message)
 	local pos = go.get_position(".")
 	if string_message == hash("move_left") then
@@ -64,7 +51,7 @@ end
 function on_message(self, message_id, message, sender)
 	-- move
 	if message_id == hash("move_left") or message_id == hash("move_right") or message_id == hash("move_up") or message_id == hash("move_down") then
-		move(self, message_id, message)
+		move(self, message_id)
 	end
 
 	if message_id == hash("trigger_response")then

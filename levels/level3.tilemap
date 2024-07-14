@@ -785,7 +785,23 @@ layers {
     rotate90: 0
   }
   cell {
+    x: 3
+    y: 2
+    tile: 40
+    h_flip: 0
+    v_flip: 0
+    rotate90: 0
+  }
+  cell {
     x: 1
+    y: 4
+    tile: 40
+    h_flip: 0
+    v_flip: 0
+    rotate90: 0
+  }
+  cell {
+    x: 3
     y: 4
     tile: 40
     h_flip: 0
@@ -810,6 +826,14 @@ layers {
   }
   cell {
     x: 3
+    y: 6
+    tile: 39
+    h_flip: 0
+    v_flip: 0
+    rotate90: 0
+  }
+  cell {
+    x: 5
     y: 6
     tile: 39
     h_flip: 0
