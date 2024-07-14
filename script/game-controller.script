@@ -1,24 +1,36 @@
 local actors = {}
 local group_box = {}
+local gate_locks = {}
 
 local function map_position(x, y)
 	return vmath.vector3(x*64-32, y*64-32, 0.3)
 end
 
 local function setup_map(self)
+	local our_url = msg.url()
 	local x, y, w, h = tilemap.get_bounds("map#level1")
 	for ix = x, x+w-1 do
 		for iy = y, y+h-1 do
 			local map_id = tilemap.get_tile("map#level1", "setup", ix, iy)
+			local map_id_foreground = tilemap.get_tile("map#level1", "foreground", ix, iy)
 			local p_pos = map_position(ix, iy)
+			-- setup map
 			if map_id == 74 then
-				self.p = factory.create("/factory#factory_player", p_pos)
+				self.p = factory.create("/factory#factory_player", p_pos, nil, {is_player=true, control_url = our_url})
 				tilemap.set_tile("map#level1", "setup", ix, iy, 0)
 				table.insert(actors, self.p)
+			elseif map_id == 40 then
+				factory.create("/factory#factory_trigger", p_pos, nil) -- trigger box for level
 			elseif map_id == 41 then
-				local o = factory.create("/factory#factory_box", p_pos)
+				local o = factory.create("/factory#factory_box", p_pos, nil, {control_url = our_url})
 				tilemap.set_tile("map#level1", "setup", ix, iy, 0)
 				table.insert(actors, o)
+			end
+
+			-- collect foreground gate
+			if map_id_foreground == 11 then
+				local value_foreground = {grid_x = ix, grid_y = iy, lock=true}
+				table.insert(gate_locks, value_foreground)
 			end
 		end
 	end
@@ -36,7 +48,8 @@ end
 
 local function is_not_wall(self, grid_x, grid_y)
 	local tilemap_id = check_tile_foreground(self, grid_x, grid_y)
-	return tilemap_id ~= 8
+	local is_wall = not (tilemap_id == 8 or tilemap_id == 11)
+	return is_wall
 end
 
 local function object_on_tiles(self, x, y)
@@ -78,6 +91,25 @@ local function grid_to_string(self, grid)
 	return string
 end
 
+local function check_all_gate_locked()
+	for key, value in ipairs(gate_locks) do
+		print("96 : ", value.lock)
+		-- if value.lock then
+		-- return true
+		-- 	print("99 : ,", value.lock) 
+		-- end
+	end
+	return false
+end
+
+local function open_all_gate(self, lock)
+	local gate = lock and 11 or 19
+	for key, value in ipairs(gate_locks) do
+		tilemap.set_tile("map#level1", "foreground", value.grid_x, value.grid_y, gate)
+	end
+end
+
+
 local function simulate_movement(self, add_x, add_y)
 	local p = self.p
 	local grid_p = gameobject_current_grid(self, p)
@@ -118,5 +150,33 @@ function on_input(self, action_id, action)
 		end
 
 		timer.delay(0.05, false, check_winning)
+	end
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("open_gate") then
+		-- set value to open the gate
+		for key, value in ipairs(gate_locks) do
+			print("open gate 16")
+			pprint(message)
+			pprint(value)
+			if message.grid_x == value.grid_x and message.grid_y == value.grid_y and value.lock == true then
+				print("open gate")
+				gate_locks[key].lock = false
+			end
+		end
+		local will_open = check_all_gate_locked()
+		print("164 ", will_open)
+		-- if will_open then
+		-- 	open_all_gate(self, false)
+		-- end
+	elseif message_id == hash("close_gate") then 
+		for key, value in ipairs(gate_locks) do
+			if message.grid_x == value.grid_x and message.grid_y == value.grid_y and value.lock == false then
+				gate_locks[key].lock = true
+			end
+		end
+		print("close gate")
+		-- open_all_gate(self, true)
 	end
 end

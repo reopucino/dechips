@@ -32,8 +32,8 @@ local function move(self, string_message)
 end
 
 
-local last_move = nil
 go.property("is_player", false)
+go.property("control_url", msg.url())
 function init(self)
 	-- Add initialization code here
 	-- Learn more: https://defold.com/manuals/script/
@@ -62,28 +62,17 @@ function fixed_update(self, dt)
 end
 
 function on_message(self, message_id, message, sender)
-	-- if message_id == hash("move_left") and is_not_wall(self, -1, 0) then
-	-- 	move(self, message_id)
-	-- 	last_move = message_id
-	-- elseif message_id == hash("move_right") and is_not_wall(self, 1, 0) then
-	-- 	move(self, message_id)
-	-- 	last_move = message_id
-	-- elseif message_id == hash("move_up") and is_not_wall(self, 0, 1) then
-	-- 	move(self, message_id)
-	-- 	last_move = message_id
-	-- elseif message_id == hash("move_down") and is_not_wall(self, 0, -1) then
-	-- 	move(self, message_id)
-	-- 	last_move = message_id
-	-- end
-
 	-- move
 	if message_id == hash("move_left") or message_id == hash("move_right") or message_id == hash("move_up") or message_id == hash("move_down") then
 		move(self, message_id, message)
 	end
 
 	if message_id == hash("trigger_response")then
-		if message.enter and message.other_group == hash("box") then
-			msg.post(message.other_id, last_move)
+		local grid = current_grid(self)
+		if message.enter and message.other_group == hash("box_place") and message.own_group == hash("box") then
+			msg.post(self.control_url, "open_gate", {grid_x = grid.x, grid_y = grid.y})
+		elseif message.enter == false and message.other_group == hash("box_place") and message.own_group == hash("box") then
+			msg.post(self.control_url, "close_gate", {grid_x = grid.x, grid_y = grid.y})
 		end
 	end
 end

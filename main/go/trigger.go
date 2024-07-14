@@ -1,22 +1,7 @@
-components {
-  id: "player_movement"
-  component: "/script/object_movement.script"
-  position {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-  }
-  rotation {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 1.0
-  }
-}
 embedded_components {
   id: "sprite"
   type: "sprite"
-  data: "default_animation: \"box\"\n"
+  data: "default_animation: \"empty\"\n"
   "material: \"/builtins/materials/sprite.material\"\n"
   "blend_mode: BLEND_MODE_ALPHA\n"
   "textures {\n"
@@ -44,9 +29,8 @@ embedded_components {
   "mass: 0.0\n"
   "friction: 0.1\n"
   "restitution: 0.5\n"
-  "group: \"box\"\n"
-  "mask: \"player\"\n"
-  "mask: \"box_place\"\n"
+  "group: \"box_place\"\n"
+  "mask: \"box\"\n"
   "embedded_collision_shape {\n"
   "  shapes {\n"
   "    shape_type: TYPE_BOX\n"
